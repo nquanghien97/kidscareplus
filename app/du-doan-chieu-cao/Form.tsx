@@ -186,7 +186,7 @@ function Form() {
   const id = useId()
   return (
     <div className="max-w-6xl m-auto">
-      <div className="bg-[url('/dk12.webp')] bg-[length:100%_100%] rounded-2xl p-8">
+      <div className="bg-[#66dae0] rounded-[50px] p-8">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
             <h2 className="text-center text-3xl mb-4 uppercase font-bold">Thông tin phụ huynh</h2>
