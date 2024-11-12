@@ -2,7 +2,6 @@
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { getDistricts, getProvinces, getWards } from '@/services/provinces';
 import { Controller, useForm } from 'react-hook-form';
 import Select, { SelectInstance, SingleValue } from 'react-select';
 import { useEffect, useId, useRef, useState } from 'react';
@@ -10,6 +9,7 @@ import { OrderEntity } from '@/entities/order';
 import { createOrder } from '@/services/orderServices';
 import { toast, ToastContainer } from 'react-toastify';
 import LoadingIcon from '@/assets/icons/LoadingIcon';
+import data from '@/app/data.json'
 
 interface FormValues extends OrderEntity {
   provinceLabel?: string;
@@ -64,10 +64,7 @@ function FormOrder() {
   const selectWardRef = useRef<SelectInstance<Option, false>>(null);
 
   useEffect(() => {
-    (async () => {
-      const res = await getProvinces()
-      setOptionProvinces(res.data.map((item: { name: string, id: number }) => ({ label: item.name, value: item.id })))
-    })()
+    setOptionProvinces(data.map(item => ({ label: item.FullName, value: item.Code })))
   }, [])
 
   const onSubmit = async (data: FormValues) => {
@@ -162,8 +159,7 @@ function FormOrder() {
                           selectWardRef.current?.clearValue();
                           setValue('provinceLabel', selectedOption ? selectedOption.label : "")
                           if (provinceId) {
-                            const res = await getDistricts(provinceId);
-                            setOptionsDistricts(res.data?.map((item: { name: string, id: string }) => ({ label: item.name, value: item.id })));
+                            setOptionsDistricts(data.flatMap(item => item.District.filter(item1 => item1.ProvinceCode === provinceId)).map(item3 => ({ label: item3.FullName, value: item3.Code})));
                           }
                         }
                         }
@@ -193,8 +189,7 @@ function FormOrder() {
                           const districtId = selectedOption?.value;
                           selectWardRef.current?.clearValue();
                           if (districtId) {
-                            const res = await getWards(districtId);
-                            setOptionsWards(res.data?.map((item: { name: string, id: string }) => ({ label: item.name, value: item.id })));
+                            setOptionsWards(data.flatMap(item => item.District.flatMap(item1 => item1.Ward?.filter(item2 => item2.DistrictCode === districtId))).filter(item4 => item4 !== undefined).flatMap(item3 => ({ label: item3.FullName, value: item3.Code })));
                           }
                         }
                         }

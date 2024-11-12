@@ -14,8 +14,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { getDistricts, getProvinces, getWards } from '@/services/provinces';
-
+import data from '@/app/data.json'
 interface FormValues {
   parentName: string;
   phoneNumber: string;
@@ -116,9 +115,9 @@ function Form() {
   const [loading, setLoading] = useState(false);
   const [suggestHeight, setSuggestHeight] = useState<number>();
   const [suggestWeight, setSuggestWeight] = useState<number>();
-  const [listProvinces, setListProvinces] = useState<{ name: string, id: string }[]>([]);
+  const [optionProvinces, setOptionProvinces] = useState<{ label: string, value: string }[]>([]);
   const [optionsDistricts, setOptionsDistricts] = useState<{ label: string, value: string }[]>([]);
-  const [optionsWards, setOptionsWards] = useState<{ label: string, value: string}[]>([]);
+  const [optionsWards, setOptionsWards] = useState<{ label: string, value: string }[]>([]);
 
   const router = useRouter();
   const suggestValue = (value: number) => {
@@ -141,12 +140,8 @@ function Form() {
 
   //get provinces
   useEffect(() => {
-    (async () => {
-      const res = await getProvinces()
-      setListProvinces(res.data)
-    })()
+    setOptionProvinces(data.map(item => ({ label: item.FullName, value: item.Code })))
   }, [])
-  const optionsProvinces = listProvinces.map(item => ({ label: item.name, value: item.id }) )  
 
   const onSubmit = async (data: FormValues) => {
     setLoading(true);
@@ -235,13 +230,13 @@ function Form() {
                     render={({ field }) => (
                       <Select
                         {...field}
-                        options={optionsProvinces}
+                        options={optionProvinces}
                         instanceId={id}
                         placeholder="Tỉnh/Thành phố*"
                         className="w-full"
                         getOptionLabel={(option: Option) => option.label}
                         getOptionValue={(option: Option) => option.value}
-                        value={optionsProvinces.find((opt) => opt.value === field.value)} // Set the value correctly
+                        value={optionProvinces.find((opt) => opt.value === field.value)} // Set the value correctly
                         onChange={async (selectedOption: SingleValue<Option>) => {
                             field.onChange(selectedOption ? selectedOption.value : "")
                             const provinceId = selectedOption?.value;
@@ -249,8 +244,7 @@ function Form() {
                             selectWardRef.current?.clearValue();
                             setValue('provinceLabel', selectedOption ? selectedOption.label : "")
                             if (provinceId) {
-                              const res = await getDistricts(provinceId);
-                              setOptionsDistricts(res.data?.map((item: {name: string, id: string }) => ({ label: item.name, value: item.id }) ));
+                              setOptionsDistricts(data.flatMap(item => item.District.filter(item1 => item1.ProvinceCode === provinceId)).map(item3 => ({ label: item3.FullName, value: item3.Code})));
                             }
                           }
                         }
@@ -280,8 +274,7 @@ function Form() {
                           const districtId = selectedOption?.value;
                           selectWardRef.current?.clearValue();
                             if (districtId) {
-                              const res = await getWards(districtId);
-                              setOptionsWards(res.data?.map((item: {name: string, id: string }) => ({ label: item.name, value: item.id }) ));
+                              setOptionsWards(data.flatMap(item => item.District.flatMap(item1 => item1.Ward?.filter(item2 => item2.DistrictCode === districtId))).filter(item4 => item4 !== undefined).flatMap(item3 => ({ label: item3.FullName, value: item3.Code })));
                             }
                         }
                         }
