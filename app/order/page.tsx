@@ -9,6 +9,7 @@ import Image from 'next/image'
 import Banner from '@/components/HomePage/Banner'
 import Link from 'next/link'
 import { Metadata } from 'next'
+import DownIcon from '@/assets/icons/DownIcon'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://kidscareplus.vn'),
@@ -146,8 +147,9 @@ function page() {
           </div>
         </div>
         <div className="flex justify-center mt-4">
-          <Link href="#order" className="bg-[#0054a5] px-8 py-2 rounded-xl text-white text-2xl hover:opacity-70 flex justify-center items-center">
+          <Link href="#order" className="bg-[#0054a5] px-8 py-2 rounded-xl text-white text-2xl hover:opacity-70 flex justify-center items-center transform animate-pulsate">
             Đặt hàng ngay
+            <DownIcon width={40} height={40} fill='white' />
           </Link>
         </div>
       </section>
