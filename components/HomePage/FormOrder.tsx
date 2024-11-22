@@ -80,6 +80,16 @@ function FormOrder() {
       address: data.address,
     }
     try {
+      if (process.env.NEXT_PUBLIC_GOOGLE_API_BASE_URL) {
+        await fetch(process.env.NEXT_PUBLIC_GOOGLE_API_BASE_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(submitForm),
+          mode: 'no-cors'
+        })
+      }
       await createOrder(submitForm)
       toast.success('Đăng ký đơn hàng thành công, Chúng tôi sẽ liên hệ quý khách trong thời gian tới')
     } catch (err) {
@@ -92,7 +102,7 @@ function FormOrder() {
   }
 
   return (
-    <section className="mb-8 bg-[bg-[#69dbe1]">
+    <section className="mb-8 bg-[bg-[#69dbe1] scroll-mt-24" id="order">
       <div className="px-4 py-8 max-w-6xl m-auto bg-[url('/bgr-dk-pc.webp')] bg-[length:100%_100%] md:bg-cover bg-center rounded-[50px]">
         <div className="mb-8">
           <h2 className="text-[#065691] text-4xl uppercase text-center font-bold">Đăng ký mua hàng</h2>
@@ -113,25 +123,25 @@ function FormOrder() {
                   className="w-full p-4 rounded-full outline-none"
                   placeholder='Số điện thoại*'
                   {...register('phoneNumber')}
-                  />
-                  {errors.phoneNumber && <span className="text-[red] text-xs p-2">{errors.phoneNumber.message}</span>}
+                />
+                {errors.phoneNumber && <span className="text-[red] text-xs p-2">{errors.phoneNumber.message}</span>}
               </div>
             </div>
             <div className="w-full flex gap-4 max-md:flex-col">
               <div className="md:w-1/2">
                 <input
-                className="w-full p-4 rounded-full outline-none"
-                placeholder='Sản phẩm đăng ký mua*'
-                {...register('productName')}
+                  className="w-full p-4 rounded-full outline-none"
+                  placeholder='Sản phẩm đăng ký mua*'
+                  {...register('productName')}
                 />
                 {errors.productName && <span className="text-[red] text-xs p-2">{errors.productName.message}</span>}
               </div>
               <div className="md:w-1/2">
                 <input
-                type='number'
-                className="w-full p-4 rounded-full outline-none"
-                placeholder='Số lượng'
-                {...register('quantity')}
+                  type='number'
+                  className="w-full p-4 rounded-full outline-none"
+                  placeholder='Số lượng'
+                  {...register('quantity')}
                 />
                 {errors.quantity && <span className="text-[red] text-xs p-2">{errors.quantity.message}</span>}
               </div>
@@ -159,7 +169,7 @@ function FormOrder() {
                           selectWardRef.current?.clearValue();
                           setValue('provinceLabel', selectedOption ? selectedOption.label : "")
                           if (provinceId) {
-                            setOptionsDistricts(data.flatMap(item => item.District.filter(item1 => item1.ProvinceCode === provinceId)).map(item3 => ({ label: item3.FullName, value: item3.Code})));
+                            setOptionsDistricts(data.flatMap(item => item.District.filter(item1 => item1.ProvinceCode === provinceId)).map(item3 => ({ label: item3.FullName, value: item3.Code })));
                           }
                         }
                         }
@@ -240,12 +250,12 @@ function FormOrder() {
               <label htmlFor="checkbox">Bố mẹ đã đọc và đồng ý <strong>Điều khoản đăng ký</strong></label>
               {errors.term && <span className="text-[red] text-xs p-2">{errors.term.message}</span>}
             </div>
-            <p className="text-white italic">Hãy liên hệ chuyên gia dinh dưỡng theo số <strong>028 555 555 555</strong> để được tư vấn thêm</p>
+            <p className="text-white italic">Hãy liên hệ chuyên gia dinh dưỡng theo số <strong>0978488123</strong> để được tư vấn thêm</p>
             <div className="flex justify-center">
-            <div className="flex justify-center items-center bg-[#065691] rounded-full px-8 py-2">
-              <button type='submit' className="text-white italic uppercase hover:opacity-85 duration-300 mr-2">Xác nhận</button>
-              {loading && <LoadingIcon size="small" />}
-            </div>
+              <div className="flex justify-center items-center bg-[#065691] rounded-full px-8 py-2">
+                <button type='submit' className="text-white italic uppercase hover:opacity-85 duration-300 mr-2">Xác nhận</button>
+                {loading && <LoadingIcon size="small" />}
+              </div>
             </div>
           </form>
         </div>

@@ -52,5 +52,10 @@ export const ListHeader: ListHeaderType[] = [
     id: 6,
     title: 'Đại lý',
     path: '/dai-ly'
+  },
+  {
+    id: 7,
+    title: 'Đặt hàng',
+    path: '/order'
   }
 ]
