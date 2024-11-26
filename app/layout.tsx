@@ -58,6 +58,9 @@ export default function RootLayout({
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'AW-16773984613');
+            gtag('event', 'conversion', {
+              send_to: 'AW-16773984613/9pkgCHIuuoZEOXiur4'
+            });
           `}
         </Script>
 
