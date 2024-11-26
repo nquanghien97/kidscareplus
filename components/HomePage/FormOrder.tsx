@@ -10,6 +10,7 @@ import { createOrder } from '@/services/orderServices';
 import { toast, ToastContainer } from 'react-toastify';
 import LoadingIcon from '@/assets/icons/LoadingIcon';
 import data from '@/app/data.json'
+import { formatDate } from '@/utils/formatDate';
 
 interface FormValues extends OrderEntity {
   provinceLabel?: string;
@@ -59,6 +60,10 @@ function FormOrder() {
   }, [])
 
   const onSubmit = async (data: FormValues) => {
+    const date = new Date(Date.now());
+    const link = window.location.href
+    const res_ip = await fetch('https://api.ipify.org?format=json')
+    const ip = await res_ip.json()
     setLoading(true);
     const submitForm = {
       fullName: data.fullName,
@@ -68,6 +73,7 @@ function FormOrder() {
       ward: data.wardLabel,
       address: data.address,
     }
+    console.log(submitForm)
     try {
       if (process.env.NEXT_PUBLIC_GOOGLE_API_BASE_URL) {
         await fetch(process.env.NEXT_PUBLIC_GOOGLE_API_BASE_URL, {
@@ -75,10 +81,20 @@ function FormOrder() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(submitForm),
+          body: JSON.stringify({
+            date: formatDate(date),
+            ...submitForm,
+            link,
+            ip: ip.ip
+          }),
           mode: 'no-cors'
         })
       }
+      // if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
+      //   (window as any).gtag('event', 'conversion', {
+      //     send_to: 'AW-16773984613/DwVPCLeeoegZEOXiur4-',
+      //   });
+      // }
       await createOrder(submitForm)
       toast.success('Đăng ký đơn hàng thành công, Chúng tôi sẽ liên hệ quý khách trong thời gian tới')
     } catch (err) {
