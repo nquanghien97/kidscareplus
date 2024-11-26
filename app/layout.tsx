@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Header from '@/components/Header'
 import Footer from '@/components/Footer';
 import Script from 'next/script';
+import { GoogleAds } from '@/components/GoogleAds';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -47,22 +48,7 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <head>
         {/* Google Ads Conversion Tracking */}
-        <Script
-          id="google-ads-script"
-          strategy="afterInteractive"
-          src="https://www.googletagmanager.com/gtag/js?id=AW-16773984613"
-        />
-        <Script id="google-ads-init" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'AW-16773984613');
-            gtag('event', 'conversion', {
-              send_to: 'AW-16773984613/9pkgCHIuuoZEOXiur4'
-            });
-          `}
-        </Script>
+        <GoogleAds ad_id='AW-16773984613' />
 
         {/* Google Analytics 4 */}
         <Script
@@ -70,6 +56,7 @@ export default function RootLayout({
           strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-CGBMSFBQYF"
         />
+        
         <Script id="google-analytics-init" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];

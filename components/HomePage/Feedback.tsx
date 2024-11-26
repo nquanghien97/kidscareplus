@@ -44,7 +44,6 @@ function Feedback() {
         </div>
         <Swiper
           slidesPerView={1}
-          loop={true}
           modules={[Autoplay]}
           autoplay={{
             delay: 4000,
