@@ -41,6 +41,26 @@ interface Option {
   value: string;
 }
 
+const gtagReportConversion = (url?: string) => {
+  if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+    const callback = () => {
+      if (url) {
+        window.location.href = url;
+      }
+    };
+
+    (window as any).gtag('event', 'conversion', {
+      send_to: 'AW-16773984613/DwVPCLeeoegZEOXiur4-',
+      value: 1.0,
+      currency: 'VND',
+      transaction_id: '',
+      event_callback: callback,
+    });
+
+    return false;
+  }
+};
+
 function FormOrder() {
   const { register, handleSubmit, control, setValue, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
@@ -73,7 +93,6 @@ function FormOrder() {
       ward: data.wardLabel,
       address: data.address,
     }
-    console.log(submitForm)
     try {
       if (process.env.NEXT_PUBLIC_GOOGLE_API_BASE_URL) {
         await fetch(process.env.NEXT_PUBLIC_GOOGLE_API_BASE_URL, {
@@ -90,11 +109,7 @@ function FormOrder() {
           mode: 'no-cors'
         })
       }
-      // if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
-      //   (window as any).gtag('event', 'conversion', {
-      //     send_to: 'AW-16773984613/DwVPCLeeoegZEOXiur4-',
-      //   });
-      // }
+      gtagReportConversion()
       await createOrder(submitForm)
       toast.success('Đăng ký đơn hàng thành công, Chúng tôi sẽ liên hệ quý khách trong thời gian tới')
     } catch (err) {
